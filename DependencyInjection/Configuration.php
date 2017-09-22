@@ -565,6 +565,18 @@ class Configuration implements ConfigurationInterface
                 ->integerNode('default_ttl')
                     ->info('The default max age of a Response')
                 ->end()
+                ->arrayNode('cache_tags')
+                    ->info('cache tags')
+                    ->defaultValue([])
+                    ->prototype('scalar')
+                        ->validate()
+                            ->ifTrue(function ($v) {
+                                return preg_match('/^[A-Za-z0-9]+$/', $v);
+                            })
+                            ->thenInvalid('Invalid cache_tag: %s')
+                        ->end()
+                    ->end()
+                ->end()
                 ->enumNode('hash_algo')
                     ->info('Hashing algorithm to use')
                     ->values(hash_algos())
